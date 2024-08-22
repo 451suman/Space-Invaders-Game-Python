@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 
 # Initialize Pygame
 pygame.init()
@@ -32,8 +33,11 @@ enemyY_change = 40
 bulletImg = pygame.image.load("bullet.png")
 bulletX = 0
 bulletY = 480
-bulletY_change = 0.5 
+bulletY_change = 2
 bullet_state = "ready"  # "ready" means the bullet is not visible; "fire" means the bullet is moving
+
+score =0
+
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
@@ -41,10 +45,22 @@ def player(x, y):
 def enemy(x, y):
     screen.blit(enemyImg, (x, y))
 
-def fire_bullet(x, y):
+def fire_bullet(x, y):  
     global bullet_state
     bullet_state = "fire"
     screen.blit(bulletImg, (x + 8, y + 10))
+
+
+def isCollision(enemyX, enemyY, bulletX, bulletY):
+    distance = math.sqrt((math.pow(bulletX - enemyX, 2)) + (math.pow(bulletY - enemyY, 2)))
+    #10 class ko distance formula
+    if distance < 27:
+        return True
+    else:
+        return False
+    
+
+
 
 # Game loop
 running = True
@@ -63,24 +79,24 @@ while running:
         #key up means release the keys from keyboards
 
         if event.type == pygame.KEYDOWN:
-            print ("A keystroke is pressed")
+            # print ("A keystroke is pressed")
             if event.key == pygame.K_LEFT:
-                print("left arrow is pressed")
+                # print("left arrow is pressed")
                 playerX_change = -0.2
             if event.key == pygame.K_RIGHT:
-                print("Right arrow is pressed")
+                # print("Right arrow is pressed")
                 playerX_change = 0.2
             if event.key == pygame.K_SPACE:
                 if bullet_state == "ready":  # Fire the bullet only if it is ready
                     bulletX = playerX  # Capture the current  coordinate of playerX when firing
                     fire_bullet(bulletX, bulletY)
-                    print("FIRE")
+                    # print("FIRE")
 
                     
         # Key release event
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                print("key stoke is Realeased")
+                # print("key stoke is Realeased")
                 playerX_change = 0
                 #stop moving or add / sub in coordinates
 
@@ -96,11 +112,11 @@ while running:
     # Enemy movement
     enemyX += enemyX_change
     if enemyX <= 0:
-        print("enemy left side strike")
+        # print("enemy left side strike")
         enemyX_change = 0.2
         enemyY += enemyY_change
     elif enemyX >= 736:
-        print("enemy Right side strike")
+        # print("enemy Right side strike")
         enemyX_change = -0.2
         enemyY += enemyY_change
 
@@ -119,6 +135,18 @@ while running:
     if bulletY <= 0:
         bulletY = 480
         bullet_state = "ready"
+
+    #colllisoon betwen enemy and bullet
+    collision = isCollision(enemyX, enemyY, bulletX, bulletY)
+    if collision:
+        bulletY = 480
+        bullet_state = "ready"
+        score +=1
+        # print(score)
+        enemyX = random.randint(0, 770)
+        enemyY = random.randint(50, 150)
+
+
 
     enemy(enemyX, enemyY)
     player(playerX, playerY)
