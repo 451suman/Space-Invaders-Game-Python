@@ -28,7 +28,7 @@ enemyX = []
 enemyY = []
 enemyX_change = []
 enemyY_change= []
-no_of_enemy = 6
+no_of_enemy = 16
 
 for i in range(no_of_enemy):
     enemyImg.append(pygame.image.load("enemy.png")) 
@@ -139,7 +139,7 @@ while running:
     for i in range(no_of_enemy):
 
         #game over
-        if enemyY[i]> 475:
+        if enemyY[i]> playerY-10:
             for j in range(no_of_enemy):
                 #move all enemy out of the screen
                 enemyY[j] = 2000
@@ -147,7 +147,7 @@ while running:
             break
 
         enemyX[i] += enemyX_change[i]
-        if enemyX[i] <= 0:
+        if enemyX[i] <= 30:
             # print("enemy left side strike")
             enemyX_change[i] = 0.3
             enemyY[i] += enemyY_change[i]
@@ -214,4 +214,4 @@ while running:
     pygame.display.update()
 #while ends here
 
-# pygame.quit()
+pygame.quit()    
